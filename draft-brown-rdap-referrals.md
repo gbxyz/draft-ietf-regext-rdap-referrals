@@ -214,4 +214,14 @@ Registry:
 : this extension indicates that the server will provide links to related
 resources using "`Link`" headers in responses to RDAP queries.
 
+# Change log
+
+## Changes from 01 to 02
+
+* add this change log.
+
+## Changes from 00 to 01
+
+* change extension identifer from `registrar_link_header` to `link_headers`.
+
 {backmatter}
