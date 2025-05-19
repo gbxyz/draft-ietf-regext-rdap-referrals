@@ -8,7 +8,7 @@ consensus = true
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-brown-rdap-referrals-01"
+value = "draft-brown-rdap-referrals-02"
 stream = "IETF"
 status = "standard"
 
