@@ -216,6 +216,10 @@ resources using "`Link`" headers in responses to RDAP queries.
 
 # Change log
 
+## Changes from draft-brown-rdap-referrals-02 to draft-ietf-regext-rdap-referrals-00
+
+* Nothing apart from the name.
+
 ## Changes from 01 to 02
 
 * add this change log.
