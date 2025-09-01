@@ -1,10 +1,10 @@
-VERSION="02"
+VERSION="00"
 
 all: build
 
 build:
-	@mmark draft-brown-rdap-referrals.md > draft-brown-rdap-referrals-$(VERSION).xml
-	@xml2rfc --html draft-brown-rdap-referrals-$(VERSION).xml
+	@mmark draft-ietf-regext-rdap-referrals.md > draft-ietf-regext-rdap-referrals-$(VERSION).xml
+	@xml2rfc --html draft-ietf-regext-rdap-referrals-$(VERSION).xml
 
 clean:
 	@rm -f *xml *html
