@@ -41,22 +41,21 @@ organization = "ICANN"
 
 .# Abstract
 
-This document describes how RDAP servers can provide HTTP "`Link`" header fields
-in RDAP responses to allow RDAP clients to efficiently determine the URL of
-related RDAP records for a resource.
+This document describes an RDAP extension that allows RDAP clients to request to
+be referred to a related RDAP record for a resource.
 
 {mainmatter}
 
 # Introduction
 
 Many Registration Data Access Protocol (RDAP, described in [@!RFC7480],
-[@!RFC7481], [@!RFC9082], [@!RFC9083] and others) resources contain referrals to
+[@!RFC7481], [@!RFC9082], [@!RFC9083] and others) resources contain links to
 related RDAP resources.
 
 For example, in the domain space, an RDAP record for a domain name received from
-the registry operator may include a referral to the RDAP record for the same
+the registry operator may include a link for the RDAP record for the same
 object provided by the sponsoring registrar, while in the IP address space, an
-RDAP record for an address allocation may include referrals to enclosing or
+RDAP record for an address allocation may include links to enclosing or
 sibling prefixes.
 
 In both cases, RDAP service users are often equally if not more interested in
@@ -74,123 +73,123 @@ relevant URL from the "`links`" property of the object.
 This results in the wasteful expenditure of time, compute resources and
 bandwidth on the part of both the client and server.
 
-This document describes how an RDAP server can use "`Link`" HTTP header fields
-in responses to `HEAD` and `GET` requests to provide RDAP clients with the URL
-of related RDAP records, without the need for a signalling mechanism for the
-client to tell the server that it is only interested in retrieving those URLs.
+This document describes an extension to RDAP that allows clients to request that
+an RDAP server redirect them to the URL of a related resource.
 
-# RDAP Link Objects
+# RDAP Referral Request
 
-RDAP link objects, described in Section 4.2 of [@!RFC9083], establish
-unidirectional relationships between an RDAP resource and other web resources,
-which may also be RDAP resources. The "`rel`" property indicates the nature of
-the relationship, and its possible values are described in [@!RFC8288].
+To request a referral to a related resource, the client sends an HTTP `GET`
+request to the RDAP server with a path of the form:
 
-If a link object has a "`type`" property which contains the value
-"`application/rdap+json`", then clients can assume that the linked resource is
-also an RDAP resource.
+```
+/<object>/referrals0/<relation>/<object value>
+```
 
-In the domain name space, this allows clients to discover the URL of the
-sponsoring registrar's RDAP record for a given domain name, if the "`rel`"
-property has the value "`related`", while in the IP address space, the "`up`"
-and "`down`" values allow RDAP clients to navigate the hierarchy of address
-space allocations.
+The client replaces `<object>` with the object type (`domain`, `ip`, `autnum`,
+etc), `<relation>` with the desired relationship type (i.e. `related`), and
+`<object value>` with the applicable object (domain name, IP address, AS number,
+etc).
 
-# HTTP "`Link`" Header Field
+As an example, a client wishing to be redirected to the `related` resource for
+the domain name `example.com` would send a `GET` request to
+`/domain/referrals0/related/example.com`, while a client wishing to be
+redirected to the parent object of the IP address `192.0.2.42` would send a
+`GET` request to `/ip/referrals0/rdap-up/192.0.2.42`.
 
-"`Link`" header fields, described in Section 3 of [@!RFC8288], provide a means
-for describing a relationship between two resources, generally between the
-requested resource and some other resource. The "`Link`" header field is
-semantically equivalent to the `<link>` element in HTML, and multiple "`Link`"
-headers may be present in the header of an HTTP response.
+The client **MAY** include an `Accept` header field in the request. This value
+may assist the server when there are multiple links with the same relation for
+the object (as described below).
 
-"`Link`" header fields may contain most of the parameters that are also present
-in Link objects in RDAP responses (See Section 4.2 of [@!RFC9083]). So for
-example, an RDAP link object which has the following JSON representation:
+Full example:
 
-```json
+```
+GET /domain/referrals0/related/example.com HTTP/2
+Accept: application/rdap+json
+```
+
+# RDAP Referral Response
+
+If the object specified in the request exists, a single link of the appropriate
+type exists, and the client is authorised to perform the request, the server
+response **MUST** have an HTTP status code of 301 or 302, and include an HTTP
+`Location` header field, whose value contains the URL of the linked resource.
+
+Full example:
+
+```
+HTTP/2 302 
+Location: https://rdap.example.com/rdap/domain/example.com
+```
+
+## Multiple Links
+
+It may be that an RDAP resource has multiple links with the same relation
+and/or type. Since an HTTP response can only contain a single `Location` header
+field, it is not possible for an RDAP server to provide a referral in this
+scenario since it cannot know _which_ link the client wants to follow.
+
+If the HTTP `Accept` header field is present in the request (as described
+above), the server **SHOULD** use its value to improve the granularity of the
+response. For example, an object may have multiple `related` links, but may only
+have one `related` link of type `application/rdap+json`.
+
+If an RDAP server receives a referral request for a resource that has multiple
+links with the same relation and/or type, then the response **MUST** have an
+HTTP status code of 300. The response body **MUST** be a minimal RDAP response
+(as described in [@!RFC9083]) for the object in the response, containing only
+the `objectClassName` and `links` properties. The client may then select the
+appropriate link itself, based on the link properties, or present them to the
+user for review.
+
+Full example:
+
+```
+HTTP/2 300
+Content-Type: application/rdap+json
+Access-Control-Allow-Origin: *
+Vary: Accept
+
 {
-  "value" : "https://example.com/context_uri",
-  "rel" : "self",
-  "href" : "https://example.com/target_uri",
-  "hreflang" : [ "en", "ch" ],
-  "title" : "title",
-  "media" : "screen",
-  "type" : "application/json"
+  "objectClassName": "domain",
+  "links": [
+    {
+      "value": "https://rdap.nic.example/domain/example.com",
+      "rel": "related",
+      "href": "https://rdap.example.com/rdap/domain/example.com",
+      "type": "application/rdap+json"
+    },
+    {
+      "value": "https://rdap.nic.example/domain/example.com",
+      "rel": "related",
+      "href": "https://rdap.example.com/rdap/domain/example.com",
+      "type": "application/rdap+json"
+    }
+  ]
 }
 ```
 
-may be represented in an HTTP response header as follows:
+Note that the `value` property of the link objects in the response **MUST** be
+the URI of the object, not the request URI, since the `value` property specifies
+the context URI of the link.
+
+## Cacheability of referral requests
+
+To facilitate caching of RDAP resources by intermediary proxies, servers which
+provide a referral based on the value of the `Accept` header field in the
+request **MUST** include a `Vary` header field (See Section 12.5.5 of
+[@!RFC2535]) in the response. This field **MUST** include `accept` and **MAY**
+include other header field names.
+
+Example:
 
 ```
-Link: <https://example.com/target_uri>;
-  rel="self";
-  hreflang="en,ch";
-  title="title";
-  media="screen";
-  type="application/json"
+Vary: accept, accept-language
 ```
-
-In this example, the context URI is the URI that was requested by the user
-agent.
-
-## Registrar RDAP "`Link`" Header
-
-Following on from the above, the following RDAP link object, which represents
-the RDAP URL of the sponsoring registrar of a resource:
-
-```json
-{
-  "value": "https://rdap.example.com/domain/example.com",
-  "title": "URL of Sponsoring Registrar's RDAP Record",
-  "rel": "related",
-  "href": "https://rdap.example.com/domain/example.com",
-  "type": "application/rdap+json"
-}
-```
-
-may be represented as follows:
-
-```
-Link: <https://rdap.example.com/domain/example.com>;
-  title="URL of Sponsoring Registrar's RDAP Record";
-  rel="related";
-  type="application/rdap+json"
-```
-
-# RDAP Responses
-
-In response to `GET` and `HEAD` RDAP requests, RDAP servers which implement this
-specification **MUST** include a "`Link`" header field for each link object
-which refers to an RDAP resource that is present in the "`links`" array of the
-object in question. The server **MAY** also include "`Link`" headers for link
-objects which refer to other types of resource. In all cases, the link
-attributes **MUST** be the same in both places.
-
-## RDAP `HEAD` requests
-
-The HTTP `HEAD` method can be used for obtaining metadata about a resource
-without transferring that resource (see Section 4.3.2 of [@!RFC7231]).
-
-An RDAP client which only wishes to obtain the URLs of related RDAP resources
-can issue a `HEAD` request for an RDAP resource and check the response for the
-presence of an appropriate "`Link`" header field. If the link is absent, it may
-then fall back to performing a `GET` request.
-
-An RDAP client interested in both the server's record and related records can
-use the traditional method of performing a `GET` request and extracting the link
-objects from the response. To improve performance, RDAP clients **MAY** inspect
-the header of a response, extract the link headers, and issue  requests for the
-related record in parallel while the request to the server is still in flight.
-As an example, the cURL library provides the
-[CURLOPT_HEADERFUNCTION](https://curl.se/libcurl/c/CURLOPT_HEADERFUNCTION.html)
-configuration option to provide a callback that is invoked as soon as it has
-received header data.
 
 # RDAP Conformance
 
 Servers which implement this specification **MUST** include the string
-"`link_headers`" in the "`rdapConformance`" array in all RDAP
+"`referrals0`" in the "`rdapConformance`" array in all RDAP
 responses.
 
 # IANA Considerations
@@ -198,23 +197,24 @@ responses.
 IANA is requested to register the following value in the RDAP Extensions
 Registry:
 
-**Extension identifier:**
-: `link_headers`
+**Extension identifier:** `referrals0`
 
-**Registry operator:**
-: any.
+**Registry operator:** any.
 
-**Published specification:**
-: this document.
+**Published specification:** this document.
 
-**Contact:**
-: the authors of this document.
+**Contact:** the authors of this document.
 
-**Intended usage:**
-: this extension indicates that the server will provide links to related
-resources using "`Link`" headers in responses to RDAP queries.
+**Intended usage:** this extension allows clients to request to be referred to a
+related resource for an RDAP resource.
 
-# Change log
+# Change Log
+
+This section is to be removed before publishing as an RFC.
+
+## Changes from 00 to 01
+
+* Switch to using a path segment and 30x redirect.
 
 ## Changes from draft-brown-rdap-referrals-02 to draft-ietf-regext-rdap-referrals-00
 
@@ -226,6 +226,6 @@ resources using "`Link`" headers in responses to RDAP queries.
 
 ## Changes from 00 to 01
 
-* change extension identifer from `registrar_link_header` to `link_headers`.
+* change extension identifer from `registrar_link_header` to `referrals0`.
 
 {backmatter}
