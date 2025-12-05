@@ -151,13 +151,13 @@ An example of a referral request for a parent IPv6 network:
 ```
 Client Request:
 
-GET /referrals0_ref/rdap-up/ip/2001:db8::1 HTTP/1.1
+GET /referrals0_ref/rdap-up/ip/2001%3adb8%3a%3a1 HTTP/1.1
 accept: application/rdap+json"
 
 Server Response:
 
 HTTP/1.1 200 OK
-location: https://rir.example/ip/2001:db8::/32
+location: https://rir.example/ip/2001%3adb8%3a%3a/32
 ```
 
 ## Caching by Intermediaries
