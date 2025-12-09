@@ -85,27 +85,28 @@ request to the RDAP server with a path of the form:
 /referrals0_ref/<relation>/<lookup path>
 ```
 
-The client replaces `<lookup path>` with the lookup path of the object being sought
-and the `<relation>` with the desired relationship type.
-For example, a referral query for the domain example.com would be:
+The client replaces `<lookup path>` with the lookup path of the object being
+sought and the `<relation>` with the desired relationship type. For example, a
+referral query for the domain `example.com` would be:
 
 ```
 /referrals0_ref/related/domain/example.com
 ```
 
-The referral query for the parent network of `192.0.2.42` would have the following
-full path:
+The referral query for the parent network of `192.0.2.42` would have the
+following full path:
 
 ```
 /referrals0_ref/rdap-up/ip/192.0.2.42
 ```
 
-Lookup paths for domain names, IP networks, autonomous system numbers, nameservers, and
-entities are described in [@!RFC9082]. Lookups defined by RDAP extensions may also
-use this extension.
+Lookup paths for domain names, IP networks, autonomous system numbers,
+nameservers, and entities are described in [@!RFC9082]. Lookups defined by RDAP
+extensions may also use this extension.
 
-Referral requests for searches, where more than one object is returned, as described by
-[@!RFC9083] are not supported. Servers MUST return an HTTP 400 for these requests.
+Referral requests for searches, where more than one object is returned, and help
+queries, as described by [@!RFC9083], are not supported. Servers MUST return an
+HTTP 400 for these requests.
 
 # RDAP Referral Response
 
@@ -114,50 +115,53 @@ type exists, and the client is authorised to perform the request, the server
 response **MUST** have an HTTP status code of 301 or 302, and include an HTTP
 `Location` header field, whose value contains the URL of the linked resource.
 
-When an RDAP server holds in its datastore more than one relationship type for an
-object, a scenario that is possible but not common, only one can be returned
-and is determined by server policy.
+When an RDAP server holds in its datastore more than one relationship type for
+an object, a scenario that is possible but not common, only one of the URLs
+can be returned, as determined by server policy.
 
-The following examples use the HTTP/1.1 message exchange syntax as
-seen in [@!RFC9110].
+The following examples use the HTTP/1.1 message exchange syntax as seen in
+[@!RFC9110].
 
 An example of a referral request from a domain registry to a domain registrar:
+
 ```
 Client Request:
 
 GET /referrals0_ref/related/domain/example.com HTTP/1.1
-accept: application/rdap+json"
+Accept: application/rdap+json
 
 Server Response:
 
 HTTP/1.1 200 OK
-location: https://registrar.example/domain/example.com
+Location: https://registrar.example/domain/example.com
 ```
 
 An example of a referral request for a parent IPv4 network:
+
 ```
 Client Request:
 
 GET /referrals0_ref/rdap-up/ip/192.0.2.42 HTTP/1.1
-accept: application/rdap+json"
+Accept: application/rdap+json
 
 Server Response:
 
 HTTP/1.1 200 OK
-location: https://rir.example/ip/192.0.2.0/24
+Location: https://rir.example/ip/192.0.2.0/24
 ```
 
 An example of a referral request for a parent IPv6 network:
+
 ```
 Client Request:
 
 GET /referrals0_ref/rdap-up/ip/2001%3adb8%3a%3a1 HTTP/1.1
-accept: application/rdap+json"
+Aaccept: application/rdap+json"
 
 Server Response:
 
 HTTP/1.1 200 OK
-location: https://rir.example/ip/2001%3adb8%3a%3a/32
+Location: https://rir.example/ip/2001%3adb8%3a%3a/32
 ```
 
 ## Caching by Intermediaries
@@ -165,7 +169,7 @@ location: https://rir.example/ip/2001%3adb8%3a%3a/32
 To facilitate caching of RDAP resources by intermediary proxies, servers which
 provide a referral based on the value of the `Accept` header field in the
 request **MUST** include a `Vary` header field (See Section 12.5.5 of
-[@!RFC2535]) in the response. This field **MUST** include `accept` and **MAY**
+[@!RFC2535]) in the response. This field **MUST** include `accept`, and **MAY**
 include other header field names.
 
 Example:
@@ -177,8 +181,7 @@ Vary: accept, accept-language
 # RDAP Conformance
 
 Servers which implement this specification **MUST** include the string
-"`referrals0`" in the "`rdapConformance`" array in all RDAP
-responses.
+"`referrals0`" in the "`rdapConformance`" array in all RDAP responses.
 
 # IANA Considerations
 
@@ -202,9 +205,12 @@ This section is to be removed before publishing as an RFC.
 
 ## Changes from 00 to 01
 
-* Switch to using a path segment and 30x redirect.
+* Switch to using a path segment and a 30x redirect.
 
-## Changes from draft-brown-rdap-referrals-02 to draft-ietf-regext-rdap-referrals-00
+* Describe how the server behaves when multiple links exist.
+
+## Changes from draft-brown-rdap-referrals-02 to
+draft-ietf-regext-rdap-referrals-00
 
 * Nothing apart from the name.
 
