@@ -1,8 +1,7 @@
 # Efficient RDAP Referrals
 
-This document describes how RDAP servers can provide HTTP `Link` header fields
-in RDAP responses to allow RDAP clients to efficiently determine the URL of
-related RDAP records for a resource.
+This document describes an RDAP extension that allows RDAP clients to request to
+be referred to a related RDAP record for a resource.
 
 ## Generating the draft
 
@@ -11,7 +10,7 @@ Run `make`. You will need [mmark](https://mmark.miek.nl) and
 
 # Copyright Notice
 
-Copyright (c) 2024 IETF Trust and the persons identified as the document
+Copyright (c) 2025 IETF Trust and the persons identified as the document
 authors. All rights reserved.
 
 This document is subject to BCP 78 and the IETF Trust's Legal Provisions

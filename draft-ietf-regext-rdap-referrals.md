@@ -156,7 +156,7 @@ An example of a referral request for a parent IPv6 network:
 Client Request:
 
 GET /referrals0_ref/rdap-up/ip/2001%3adb8%3a%3a1 HTTP/1.1
-Aaccept: application/rdap+json"
+Accept: application/rdap+json"
 
 Server Response:
 
