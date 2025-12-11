@@ -110,10 +110,10 @@ HTTP 400 for these requests.
 
 # RDAP Referral Response
 
-If the object specified in the request exists, a single link of the appropriate
-type exists, and the client is authorised to perform the request, the server
-response **MUST** have an HTTP status code of 301 or 302, and include an HTTP
-`Location` header field, whose value contains the URL of the linked resource.
+If the object specified in the request exists, a single appropriate link exists,
+and the client is authorised to perform the request, the server response
+**MUST** have an HTTP status code of 301 or 302, and include an HTTP `Location`
+header field, whose value contains the URL of the linked resource.
 
 When an RDAP server holds in its datastore more than one relationship type for
 an object, a scenario that is possible but not common, only one of the URLs
@@ -163,6 +163,16 @@ Server Response:
 HTTP/1.1 200 OK
 Location: https://rir.example/ip/2001%3adb8%3a%3a/32
 ```
+
+## Selecting The Appropriate Link
+
+When the server receives a referral request, it must select which of an object's
+links it should use to construct the response.
+
+The `rel` property of the selected link **MUST** match `<relation>` path
+segment of the request. The `type` and `hreflang` properties of the link, if
+present, **MUST** match the `Accept` and (if specified) `Accept-Language` header
+fields of the request.
 
 ## Caching by Intermediaries
 
