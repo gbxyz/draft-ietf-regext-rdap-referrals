@@ -179,7 +179,7 @@ fields of the request.
 To facilitate caching of RDAP resources by intermediary proxies, servers which
 provide a referral based on the value of the `Accept` header field in the
 request **MUST** include a `Vary` header field (See Section 12.5.5 of
-[@!RFC2535]) in the response. This field **MUST** include `accept`, and **MAY**
+[@!RFC9110]) in the response. This field **MUST** include `accept`, and **MAY**
 include other header field names.
 
 Example:
