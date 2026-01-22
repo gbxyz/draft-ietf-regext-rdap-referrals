@@ -8,7 +8,7 @@ consensus = true
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-ietf-regext-rdap-referrals-01"
+value = "draft-ietf-regext-rdap-referrals-02"
 stream = "IETF"
 status = "standard"
 
@@ -54,9 +54,9 @@ related RDAP resources.
 
 For example, in the domain space, an RDAP record for a domain name received from
 the registry operator may include a link for the RDAP record for the same
-object provided by the sponsoring registrar, while in the IP address space, an
-RDAP record for an address allocation may include links to enclosing or
-sibling prefixes.
+object provided by the sponsoring registrar (for example, see
+[@gtld-rdap-profile]), while in the IP address space, an RDAP record for an
+address allocation may include links to enclosing or sibling prefixes.
 
 In both cases, RDAP service users are often equally if not more interested in
 these related RDAP resources than the resource provided by the TLD registry or
@@ -82,12 +82,16 @@ To request a referral to a related resource, the client sends an HTTP `GET`
 request to the RDAP server with a path of the form:
 
 ```
-/referrals0_ref/<relation>/<lookup path>
+<base path>referrals0_ref/<relation><lookup path>
 ```
 
-The client replaces `<lookup path>` with the lookup path of the object being
-sought and the `<relation>` with the desired relationship type. For example, a
-referral query for the domain `example.com` would be:
+The client replaces `<base path>` with the path component of the RDAP server's
+base URL (which, as per [@RFC9224], has a trailing `/` character),
+`<lookup path>` with the lookup path of the object being sought, and
+`<relation>` with the desired relationship type.
+
+For example, the path of a referral query for the domain `example.com` sent to
+an RDAP server whose base path is `/` would be:
 
 ```
 /referrals0_ref/related/domain/example.com
@@ -112,12 +116,20 @@ HTTP 400 for these requests.
 
 If the object specified in the request exists, a single appropriate link exists,
 and the client is authorised to perform the request, the server response
-**MUST** have an HTTP status code of 301 or 302, and include an HTTP `Location`
-header field, whose value contains the URL of the linked resource.
+**MUST**:
 
-When an RDAP server holds in its datastore more than one relationship type for
-an object, a scenario that is possible but not common, only one of the URLs
-can be returned, as determined by server policy.
+1. have an HTTP status code of 301 (Moved Permanently), 302 (Found), 303 (See
+   Other), or 307 (Temporary Redirect); and
+
+2. include an HTTP `Location` header field, whose value contains the URL of the
+   linked resource.
+
+If the server cannot find an appropriate link, the response **MUST** have an
+HTTP status of 404.
+
+If an RDAP server holds in its datastore more than one relationship type for
+an object, a scenario that is possible but not common, only one of the URLs, as
+determined by server policy, can be returned.
 
 The following examples use the HTTP/1.1 message exchange syntax as seen in
 [@!RFC9110].
@@ -132,7 +144,7 @@ Accept: application/rdap+json
 
 Server Response:
 
-HTTP/1.1 200 OK
+HTTP/1.1 307 Temporary Redirect
 Location: https://registrar.example/domain/example.com
 ```
 
@@ -146,7 +158,7 @@ Accept: application/rdap+json
 
 Server Response:
 
-HTTP/1.1 200 OK
+HTTP/1.1 307 Temporary Redirect
 Location: https://rir.example/ip/192.0.2.0/24
 ```
 
@@ -160,7 +172,7 @@ Accept: application/rdap+json"
 
 Server Response:
 
-HTTP/1.1 200 OK
+HTTP/1.1 307 Temporary Redirect
 Location: https://rir.example/ip/2001%3adb8%3a%3a/32
 ```
 
@@ -188,6 +200,12 @@ Example:
 Vary: accept, accept-language
 ```
 
+## Client Processing of Referral Responses
+
+Note that has per Section 10.2.2 of [!@RFC9110], the URI-reference in `location`
+header fields **MAY** be relative. For relative references, RDAP clients
+**MUST** compute the full URI using the request URI.
+
 # RDAP Conformance
 
 Servers which implement this specification **MUST** include the string
@@ -209,9 +227,35 @@ Registry:
 **Intended usage:** this extension allows clients to request to be referred to a
 related resource for an RDAP resource.
 
+# Security Considerations
+
+A malicious HTTP redirect has the potential to create an infinite loop, which
+exhaust resources on both client and server side.
+
+To prevent such loops, RDAP servers which receive referral requests for the
+`self` relation **MUST** respond with a 400 HTTP status.
+
+As described in Section 15.4 of [!@RFC9110], when processing server responses,
+RDAP clients **SHOULD** detect and intervene in cyclical redirections.
+
 # Change Log
 
 This section is to be removed before publishing as an RFC.
+
+## Changes from 01 to 02
+
+* Add reference to [@gtld-rdap-profile] which describes how gTLD RDAP servers
+  link to registrar RDAP resoures.
+
+* Include `<base path>` in the path specification, and remove the `/` between
+  `<relation>` and `<lookup path>` so that naive URL construction works.
+
+* Reuse the language from RFC 7480 on HTTP status codes used for redirection.
+
+* Fix HTTP status code in the examples.
+
+* Described the risk of redirection loops and things clients and servers have to
+  do.
 
 ## Changes from 00 to 01
 
@@ -232,3 +276,13 @@ This section is to be removed before publishing as an RFC.
 * change extension identifer from `registrar_link_header` to `referrals0`.
 
 {backmatter}
+
+<reference anchor="gtld-rdap-profile" target="https://www.icann.org/gtld-rdap-profile">
+    <front>
+        <title>gTLD RDAP Profile</title>
+        <author>
+            <organization>ICANN</organization>
+        </author>
+        <date year="2024"/>
+    </front>
+</reference>
