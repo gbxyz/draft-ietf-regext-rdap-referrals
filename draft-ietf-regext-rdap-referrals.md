@@ -202,7 +202,7 @@ Vary: accept, accept-language
 
 ## Client Processing of Referral Responses
 
-Note that has per Section 10.2.2 of [!@RFC9110], the URI-reference in `location`
+Note that as per Section 10.2.2 of [!@RFC9110], the URI-reference in `location`
 header fields **MAY** be relative. For relative references, RDAP clients
 **MUST** compute the full URI using the request URI.
 
