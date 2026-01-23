@@ -230,7 +230,7 @@ related resource for an RDAP resource.
 # Security Considerations
 
 A malicious HTTP redirect has the potential to create an infinite loop, which
-exhaust resources on both client and server side.
+can exhaust resources on both client and server side.
 
 To prevent such loops, RDAP servers which receive referral requests for the
 `self` relation **MUST** respond with a 400 HTTP status.
