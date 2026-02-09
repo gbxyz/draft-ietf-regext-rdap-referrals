@@ -213,9 +213,58 @@ Servers which implement this specification **MUST** include the string
 "`referrals0`" in the "`rdapConformance`" array in responses to RDAP "help"
 queries.
 
+# Bootstrap Use Case
+
+The primary use case of this extension is a one-hop referral, where the client is not interested in the use
+of this extension beyond the first redirect. An example use case is querying a bootstrap redirect server for
+the authoritative server of information according to the IANA RDAP bootstrap information. 
+
+```
+Client Request:
+
+GET /referrals0_ref/rdap-bootstrap/ip/2001%3adb8%3a%3a1 HTTP/1.1
+Accept: application/rdap+json"
+
+Server Response:
+
+HTTP/1.1 307 Temporary Redirect
+Location: https://rir1.example/ip/2001%3adb8%3a%3a/32
+```
+
+Other uses cases may exist, but for this specific use case, this document registers the "rdap-bootstrap"
+link relationship type.
+
+# Multi-Hop Referral Limitations
+
+In some scenarios, a target server might have a policy to issue another redirect using this extension.
+For example:
+
+```
+Client Request to rir1.example:
+
+GET /referrals0_ref/rdap-top/ip/2001%3adb8%3a%3a1 HTTP/1.1
+Accept: application/rdap+json"
+
+Server Response:
+
+HTTP/1.1 307 Temporary Redirect
+Location: https://rir2.example/referrals0_ref/rdap-top/ip/2001%3adb8%3a%3a/32
+```
+
+In this scenario rir1.example is redirecting to rir2.example with a "/referrals0_ref" path. However,
+not all servers may support this extension. Therefore, the "/referrals0_ref" path defined in this
+specification MUST only be used in an HTTP redirect if the server issuing the redirect is assured that the
+target server of the redirect supports this extension.
+
+Furthermore, servers SHOULD only use the "/referrals0_ref" path in an HTTP redirect when the link relationship
+type is one for a terminal relationship such as "rdap-top" and "rdap-bottom" (i.e., "rdap-up" and "rdap-down"
+do not explicitly express a relationship that is the end of a series of referrals).
+
 # IANA Considerations
 
-IANA is requested to register the following value in the RDAP Extensions
+## RDAP Extension Identifier
+
+IANA is requested to register the following value in the [@rdap-extensions]
 Registry:
 
 **Extension identifier:** `referrals0`
@@ -228,6 +277,17 @@ Registry:
 
 **Intended usage:** this extension allows clients to request to be referred to a
 related resource for an RDAP resource.
+
+## Link Relations
+
+IANA is requested to register the following value into the [@link-relations] registry:
+
+Relation Name: rdap-bootstrap
+Description:
+Refers to an RDAP parent object in a hierarchy of objects.
+Reference:
+This document once published as an RFC.
+
 
 # Security Considerations
 
@@ -297,5 +357,23 @@ Thanks to Jasdip Singh for identifying these issues.
             <organization>ICANN</organization>
         </author>
         <date year="2024"/>
+    </front>
+</reference>
+
+<reference anchor='link-relations' target='https://www.iana.org/assignments/link-relations/link-relations.xhtml'>
+    <front>
+        <title>Link Relations</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+    </front>
+</reference>
+
+<reference anchor='rdap-extensions' target='https://www.iana.org/assignments/rdap-extensions/rdap-extensions.xhtml'>
+    <front>
+        <title>RDAP Extensions</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
     </front>
 </reference>
