@@ -1,10 +1,8 @@
-VERSION="02"
-
 all: build
 
 build:
-	@mmark draft-ietf-regext-rdap-referrals.md > draft-ietf-regext-rdap-referrals-$(VERSION).xml
-	@xml2rfc --html draft-ietf-regext-rdap-referrals-$(VERSION).xml
+	@mmark draft-ietf-regext-rdap-redirects.md > draft-ietf-regext-rdap-redirects.xml
+	@xml2rfc --html draft-ietf-regext-rdap-redirects.xml
 
 clean:
 	@rm -f *xml *html
