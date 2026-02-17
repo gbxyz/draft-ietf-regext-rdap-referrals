@@ -8,7 +8,7 @@ consensus = true
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-ietf-regext-rdap-redirects-00"
+value = "draft-ietf-regext-rdap-referrals-03"
 stream = "IETF"
 status = "standard"
 
@@ -216,8 +216,8 @@ queries.
 # Bootstrap Use Case {#bootstrap}
 
 The primary use case of this extension is a one-hop redirect, where the client is not interested in the use
-of this extension beyond the first redirect. An example use case is querying a bootstrap redirect server for
-the authoritative server of information according to the IANA RDAP bootstrap information. 
+of this extension beyond the first redirect. Another use case is querying a bootstrap redirect server for
+the authoritative source of information according to the IANA RDAP bootstrap information. 
 
 ```
 Client Request:
@@ -282,11 +282,11 @@ related resource for an RDAP resource.
 
 IANA is requested to register the following value into the [@link-relations] registry:
 
-Relation Name: rdap-bootstrap
-Description:
-Refers to an RDAP parent object in a hierarchy of objects.
-Reference:
-This document once published as an RFC.
+**Relation Name:** rdap-bootstrap
+
+**Description:** Refers to the topmost RDAP object in a hierarchy of objects.
+
+**Reference:** This document once published as an RFC.
 
 # Security Considerations
 
@@ -303,12 +303,12 @@ RDAP clients **SHOULD** detect and intervene in cyclical redirections.
 
 This section is to be removed before publishing as an RFC.
 
-## Changes from draft-ietf-regext-rdap-referrals-02 to draft-ietf-regext-rdap-redirects-00
+## Changes from 02 to 03
 
 * Consistely refer to "redirect" instead of "referral". This includes changing
-  the extension identifier to `redirects0` and the document name.
+  the extension identifier to `redirects0` and the document title.
 
-* Added {#bootstrap} and {#linkrelation}.
+* Added (#bootstrap) and (#linkrelation).
 
 * Correct specification of the redirect query path.
 
