@@ -284,7 +284,7 @@ IANA is requested to register the following value into the [@link-relations] reg
 
 **Relation Name:** rdap-bootstrap
 
-**Description:** Refers to the topmost RDAP object in a hierarchy of objects.
+**Description:** Refers to an RDAP object for which a reference can be derived from RFC 9224.
 
 **Reference:** This document once published as an RFC.
 
