@@ -55,19 +55,14 @@ related RDAP resources.
 For example, in the domain space, an RDAP record for a domain name received from
 the registry operator may include a link for the RDAP record for the same
 object provided by the sponsoring registrar (for example, see
-[@gtld-rdap-profile]), while in the IP address space, an RDAP record for an
+[@gtld-rdap-profile], in which links to registrar RDAP URLs are provided by using a link object with
+the `related` relation), while in the IP address space, an RDAP record for an
 address allocation may include links to enclosing or sibling prefixes.
 
 In both cases, RDAP service users are often equally if not more interested in
 these related RDAP resources than the resource provided by the TLD registry or
-RIR.
-
-While RDAP supports redirection of RDAP requests using HTTP redirections (which
-use a `3xx` HTTP status and the "`Location`" header field, see Section 15.4 of
-[@!RFC9110]), it is not possible for RDAP servers to know _a priori_ whether a
-client requesting an RDAP record is doing so because it wants to retrieve a
-related RDAP record, or its own, so it can only respond by providing the full
-RDAP response. The client must then parse that response in order to extract the
+RIR. However, to obtain the URL(s) of the related resources(s), the client must request the full
+RDAP record (which the server must then produce and deliver) in order to extract the
 relevant URL from the "`links`" property of the object.
 
 This results in the wasteful expenditure of time, compute resources and
