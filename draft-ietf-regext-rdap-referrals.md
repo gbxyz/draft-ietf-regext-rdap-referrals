@@ -46,7 +46,7 @@ be redirected to a related RDAP record for a resource.
 
 {mainmatter}
 
-# Introduction
+# Introduction {#introduction}
 
 Many Registration Data Access Protocol (RDAP, described in [@!RFC7480],
 [@!RFC7481], [@!RFC9082], [@!RFC9083] and others) resources contain links to
@@ -299,6 +299,14 @@ RDAP clients **SHOULD** detect and intervene in cyclical redirections.
 
 This section is to be removed before publishing as an RFC.
 
+## Changes from 03 to 04
+
+* Fixed some broken references.
+
+* Updated [@introduction] as clients will know whether or not the server supports this extension.
+
+* Added [@ack].
+
 ## Changes from 02 to 03
 
 * Consistely refer to "redirect" instead of "referral". This includes changing
@@ -347,6 +355,12 @@ Thanks to Jasdip Singh for identifying the last three of these issues.
 ## Changes from 00 to 01
 
 * change extension identifer from `registrar_link_header` to `redirects0`.
+
+# Acknowledgements {#ack}
+
+The authors would like to thank the following persons for their feedback and advice:
+
+Jasdip Singh, Pawel Kowalik, Tom Harrison, Ben Schwartz.
 
 {backmatter}
 
