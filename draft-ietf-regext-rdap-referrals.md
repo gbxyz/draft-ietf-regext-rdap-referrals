@@ -130,7 +130,8 @@ determined by server policy, can be returned.
 The following examples use the HTTP/1.1 message exchange syntax as seen in
 [@!RFC9110].
 
-An example of a redirect request from a domain registry to a domain registrar:
+An example of a redirect request from a domain registry to a domain registrar, where the registry
+implements [@gtld-rdap-profile]:
 
 ```
 Client Request:
