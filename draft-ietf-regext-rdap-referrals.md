@@ -105,7 +105,7 @@ extensions may also use this extension.
 
 Redirect requests for searches, where more than one object is returned, and help
 queries, as described by [@!RFC9083], are not supported. Servers MUST return an
-HTTP 400 for these requests.
+HTTP 409 for these requests.
 
 # RDAP Redirect Response
 
@@ -230,31 +230,29 @@ Location: https://rir1.example/ip/2001%3adb8%3a%3a/32
 Other uses cases may exist, but for this specific use case, this document registers the "rdap-bootstrap"
 link relationship type.
 
-# Multi-Hop Redirect Limitations
+# Multi-Hop Redirect Limitations {#multi_hop}
 
 In some scenarios, a target server might have a policy to issue another redirect using this extension.
 For example:
 
 ```
-Client Request to rir1.example:
+Client Request to rdap1.example:
 
-GET /redirects0_ref/rdap-top/ip/2001%3adb8%3a%3a1 HTTP/1.1
+GET /redirects0_ref/rdap-example/exampleFoo_thing/abc HTTP/1.1
 Accept: application/rdap+json"
 
 Server Response:
 
 HTTP/1.1 307 Temporary Redirect
-Location: https://rir2.example/redirects0_ref/rdap-top/ip/2001%3adb8%3a%3a/32
+Location: https://rdap2.example/redirects0_ref/rdap-example/exampleFoo_thing/abc
 ```
 
-In this scenario rir1.example is redirecting to rir2.example with a "/redirects0_ref" path. However,
+Note "rdap-example" is not a real relationship and is provided only for demostration purposes.
+
+In this scenario rdap1.example is redirecting to rdap2.example with a "/redirects0_ref" path. However,
 not all servers may support this extension. Therefore, the "/redirects0_ref" path defined in this
 specification MUST only be used in an HTTP redirect if the server issuing the redirect is assured that the
 target server of the redirect supports this extension.
-
-Furthermore, servers SHOULD only use the "/redirects0_ref" path in an HTTP redirect when the link relationship
-type is one for a terminal relationship such as "rdap-top" and "rdap-bottom" (i.e., "rdap-up" and "rdap-down"
-do not explicitly express a relationship that is the end of a series of redirects).
 
 # IANA Considerations
 
@@ -294,6 +292,22 @@ To prevent such loops, RDAP servers which receive redirect requests for the
 
 As described in Section 15.4 of [@!RFC9110], when processing server responses,
 RDAP clients **SHOULD** detect and intervene in cyclical redirections.
+
+# Operational Considerations
+
+The benefits of this extension will not materialize if a client issues a query using
+this extension, receives an error, and subsequently requeries a server without using
+this extensions. Therefore, clients SHOULD NOT use this extension unless the client
+has a priori knowledge of the target servers ability to process queries with this extension.
+
+Likewise, servers SHOULD NOT issues redirects in the manner described in (#multi_hop) unless
+the origin server has a priori knowledge of the target servers ability to process queries
+with this extension.
+
+A redirect loop will occur if a server issues a redirect causing a client to follow
+redirects back to a previous server queired during the processing of the same query.
+Clients MUST cancel any queries when a redirect loop is detected. Servers MUST NOT
+issue responses that cause redirect loops.
 
 # Change Log
 
