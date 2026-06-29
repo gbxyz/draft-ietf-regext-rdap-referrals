@@ -107,6 +107,14 @@ Redirect requests for searches, where more than one object is returned, and help
 queries, as described by [@!RFC9083], are not supported. Servers MUST return an
 HTTP 409 for these requests.
 
+## TODO: HTTP status code for redirect requests for searches
+
+This section is to be removed before publishing as an RFC.
+
+What HTTP status is appropriate here? 409 and 422 seem intended for use with
+requests that contain content, but there is no content in the request in this
+context.
+
 # RDAP Redirect Response
 
 If the object specified in the request exists, a single appropriate link exists,
