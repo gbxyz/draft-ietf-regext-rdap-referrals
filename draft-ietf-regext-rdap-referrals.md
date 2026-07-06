@@ -61,7 +61,7 @@ address allocation may include links to enclosing or sibling prefixes.
 
 In both cases, RDAP service users are often equally if not more interested in
 these related RDAP resources than the resource provided by the TLD registry or
-RIR. However, to obtain the URL(s) of the related resources(s), the client must request the full
+RIR. However, to obtain the URL(s) of the related resource(s), the client must request the full
 RDAP record (which the server must then produce and deliver) in order to extract the
 relevant URL from the "`links`" property of the object.
 
