@@ -8,7 +8,7 @@ consensus = true
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-ietf-regext-rdap-referrals-04"
+value = "draft-ietf-regext-rdap-referrals-05"
 stream = "IETF"
 status = "standard"
 
@@ -105,15 +105,7 @@ extensions may also use this extension.
 
 Redirect requests for searches, where more than one object is returned, and help
 queries, as described by [@!RFC9083], are not supported. Servers MUST return an
-HTTP 409 for these requests.
-
-## TODO: HTTP status code for redirect requests for searches
-
-This section is to be removed before publishing as an RFC.
-
-What HTTP status is appropriate here? 409 and 422 seem intended for use with
-requests that contain content, but there is no content in the request in this
-context.
+HTTP 400 for these requests.
 
 # RDAP Redirect Response
 
@@ -320,6 +312,10 @@ issue responses that cause redirect loops.
 # Change Log
 
 This section is to be removed before publishing as an RFC.
+
+## Changes from 05 to 05
+
+* Switch back to 400 as the status for redirects for search and help requests.
 
 ## Changes from 03 to 04
 
