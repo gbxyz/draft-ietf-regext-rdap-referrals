@@ -300,8 +300,8 @@ this extension, receives an error, and subsequently requeries a server without u
 this extension. Therefore, clients **SHOULD NOT** use this extension unless the client
 has _a priori_ knowledge of the target servers ability to process queries with this extension.
 
-Likewise, servers **SHOULD NOT** issues redirects in the manner described in (#multi_hop) unless
-the origin server has a priori knowledge of the target servers ability to process queries
+Likewise, servers **SHOULD NOT** issue redirects in the manner described in (#multi_hop) unless
+the origin server has _a priori_ knowledge of the target servers ability to process queries
 with this extension.
 
 A redirect loop will occur if a server issues a redirect causing a client to follow
