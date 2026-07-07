@@ -297,10 +297,10 @@ RDAP clients **SHOULD** detect and intervene in cyclical redirections.
 
 The benefits of this extension will not materialize if a client issues a query using
 this extension, receives an error, and subsequently requeries a server without using
-this extensions. Therefore, clients SHOULD NOT use this extension unless the client
-has a priori knowledge of the target servers ability to process queries with this extension.
+this extension. Therefore, clients **SHOULD NOT** use this extension unless the client
+has _a priori_ knowledge of the target servers ability to process queries with this extension.
 
-Likewise, servers SHOULD NOT issues redirects in the manner described in (#multi_hop) unless
+Likewise, servers **SHOULD NOT** issues redirects in the manner described in (#multi_hop) unless
 the origin server has a priori knowledge of the target servers ability to process queries
 with this extension.
 
