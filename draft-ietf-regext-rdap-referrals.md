@@ -29,7 +29,7 @@ organization = "ICANN"
 fullname="Andy Newton"
 organization = "ICANN"
   [author.address]
-  email = "andy.newton@icann.org"
+  email = "andy@hxr.us"
   uri = "https://icann.org"
   [author.address.postal]
   street = "12025 Waterfront Drive, Suite 300"
