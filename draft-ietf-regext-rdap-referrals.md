@@ -16,7 +16,7 @@ status = "standard"
 fullname="Gavin Brown"
 organization = "ICANN"
   [author.address]
-  email = "gavin.brown@icann.org"
+  email = "gavin.brown@fastmail.uk"
   uri = "https://icann.org"
   [author.address.postal]
   street = "12025 Waterfront Drive, Suite 300"
@@ -313,7 +313,7 @@ issue responses that cause redirect loops.
 
 This section is to be removed before publishing as an RFC.
 
-## Changes from 05 to 05
+## Changes from 04 to 05
 
 * Switch back to 400 as the status for redirects for search and help requests.
 
