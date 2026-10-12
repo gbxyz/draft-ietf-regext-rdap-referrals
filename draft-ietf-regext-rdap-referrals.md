@@ -43,6 +43,9 @@ organization = "ICANN"
 
 This document describes an RDAP extension that allows RDAP clients to request to
 be redirected to a related RDAP record for a resource.
+This document also defines new link relations that can be used in redirect requests
+that can be used in query bootstrapping and navigating hierarchies, such as the hierarchies
+described in RFC9910.
 
 {mainmatter}
 
