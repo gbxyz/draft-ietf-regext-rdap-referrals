@@ -72,11 +72,11 @@ relevant URL from the "`links`" property of the object.
 As deployed today, RDAP also has contrasting use cases for finding the registrations of IP resources.
 As defined by [@!RFC9082], an RDAP server returns the most specific network registration containing
 the information sought by the client. In practice, that information does not always sit on the server
-found through the processes defined in [@!RFC9224], and the client is given a redirect from the [@!RFC9224] origin
-server to a target server with the information. This practice is an optimization intended to satisfy the most
+found through the bootstrapping process defined in [@!RFC9224], and the client is given a redirect
+to a target server with more specific information. This practice is an optimization intended to satisfy the most
 common use case for this type of query. However, there are use cases for which the client specifically seeks
-the information on the [@!RFC9224] origin server and may wish to explicitly handled the referral to the more
-specific target server.
+the information on the bootstrapped server and may wish to handle the referral to the more specific
+server itself.
 
 This document describes extensions to RDAP that allow clients to signal preferences regarding
 redirects issued by RDAP servers.
