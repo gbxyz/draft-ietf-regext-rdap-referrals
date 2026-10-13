@@ -16,7 +16,7 @@ status = "standard"
 fullname="Gavin Brown"
 organization = "ICANN"
   [author.address]
-  email = "gavin.brown@icann.org"
+  email = "gavin.brown@fastmail.uk"
   uri = "https://icann.org"
   [author.address.postal]
   street = "12025 Waterfront Drive, Suite 300"
@@ -107,7 +107,7 @@ nameservers, and entities are described in [@!RFC9082]. Lookups defined by RDAP
 extensions may also use this extension.
 
 Redirect requests for searches, where more than one object is returned, and help
-queries, as described by [@!RFC9083], are not supported. Servers MUST return an
+queries, as described by [@!RFC9083], are not supported. Servers **MUST** return an
 HTTP 400 for these requests.
 
 # RDAP Redirect Response
@@ -254,7 +254,7 @@ Note "rdap-example" is not a real relationship and is provided only for demostra
 
 In this scenario rdap1.example is redirecting to rdap2.example with a "/redirects0_ref" path. However,
 not all servers may support this extension. Therefore, the "/redirects0_ref" path defined in this
-specification MUST only be used in an HTTP redirect if the server issuing the redirect is assured that the
+specification **MUST** only be used in an HTTP redirect if the server issuing the redirect is assured that the
 target server of the redirect supports this extension.
 
 # IANA Considerations
@@ -334,23 +334,23 @@ RDAP clients **SHOULD** detect and intervene in cyclical redirections.
 
 The benefits of this extension will not materialize if a client issues a query using
 this extension, receives an error, and subsequently requeries a server without using
-this extensions. Therefore, clients SHOULD NOT use this extension unless the client
-has a priori knowledge of the target servers ability to process queries with this extension.
+this extension. Therefore, clients **SHOULD NOT** use this extension unless the client
+has _a priori_ knowledge of the target servers ability to process queries with this extension.
 
-Likewise, servers SHOULD NOT issues redirects in the manner described in (#multi_hop) unless
-the origin server has a priori knowledge of the target servers ability to process queries
+Likewise, servers **SHOULD NOT** issue redirects in the manner described in (#multi_hop) unless
+the origin server has _a priori_ knowledge of the target servers ability to process queries
 with this extension.
 
 A redirect loop will occur if a server issues a redirect causing a client to follow
 redirects back to a previous server queired during the processing of the same query.
-Clients MUST cancel any queries when a redirect loop is detected. Servers MUST NOT
+Clients **MUST** cancel any queries when a redirect loop is detected. Servers **MUST NOT**
 issue responses that cause redirect loops.
 
 # Change Log
 
 This section is to be removed before publishing as an RFC.
 
-## Changes from 05 to 05
+## Changes from 04 to 05
 
 * Switch back to 400 as the status for redirects for search and help requests.
 
