@@ -247,7 +247,7 @@ header fields **MAY** be relative. For relative references, RDAP clients
 
 ## RDAP Conformance {#rdapConformance}
 
-Servers which implement this specification **MUST** include the string
+Servers which implement this extension **MUST** include the string
 "`redirects0`" in the "`rdapConformance`" array in responses to RDAP "help"
 queries.
 
@@ -337,7 +337,7 @@ Content-Type: application/rdap+json
 
 ## RDAP Conformance {#rdapConformance}
 
-Servers which implement this specification **MUST** include the string
+Servers which implement this extension **MUST** include the string
 "`noRedirects0`" in the "`rdapConformance`" array in responses to RDAP "help"
 queries.
 
