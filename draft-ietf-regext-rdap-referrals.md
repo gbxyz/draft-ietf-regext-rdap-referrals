@@ -104,8 +104,30 @@ nameservers, and entities are described in [@!RFC9082]. Lookups defined by RDAP
 extensions may also use this extension.
 
 Redirect requests for searches, where more than one object is returned, and help
-queries, as described by [@!RFC9083], are not supported. Servers **MUST** return an
-HTTP 400 for these requests.
+queries, as described by [@!RFC9083], are not supported. Servers MUST return an
+HTTP 400 for these requests, and SHOULD return an RDAP error body containing a
+notice with the type value of "redirect not available":
+
+```
+Client Request:
+
+GET /redirects0_ref/related/help HTTP/1.1
+Accept: application/rdap+json
+
+Server Response:
+
+HTTP/1.1 400 Bad Request
+Content-Type: application/rdap+json
+
+{
+  "errorCode": 400,
+  "type": "redirect not available",
+  "title": "Redirect request for /help is not supported",
+  "description": [
+    "Only object lookups can be used with the redirects0_ref extension."
+  ]
+}
+```
 
 # RDAP Redirect Response
 
@@ -165,7 +187,7 @@ An example of a redirect request for a parent IPv6 network:
 Client Request:
 
 GET /redirects0_ref/rdap-up/ip/2001%3adb8%3a%3a1 HTTP/1.1
-Accept: application/rdap+json"
+Accept: application/rdap+json
 
 Server Response:
 
@@ -213,7 +235,7 @@ queries.
 
 The primary use case of this extension is a one-hop redirect, where the client is not interested in the use
 of this extension beyond the first redirect. Another use case is querying a bootstrap redirect server for
-the authoritative source of information according to the IANA RDAP bootstrap information. 
+the authoritative source of information according to the IANA RDAP bootstrap information.
 
 ```
 Client Request:
@@ -281,6 +303,20 @@ IANA is requested to register the following value into the [@link-relations] reg
 **Description:** Refers to an RDAP object for which a reference can be derived from RFC 9224.
 
 **Reference:** This document once published as an RFC.
+
+## RDAP JSON Values {#rdapjsonvalues}
+
+IANA is requested to register the following value into the [@rdap-json-values] registry:
+
+**Value:** redirect not available
+
+**Type:** notice and remark type
+
+**Description:** No redirect of the requested type is available for this resource.
+
+**Registrant Name:** IESG
+
+**Registrant Contact Information:** iesg@ietf.org
 
 # Security Considerations
 
@@ -404,6 +440,15 @@ Jasdip Singh, Pawel Kowalik, Tom Harrison, Ben Schwartz.
 <reference anchor='rdap-extensions' target='https://www.iana.org/assignments/rdap-extensions/rdap-extensions.xhtml'>
     <front>
         <title>RDAP Extensions</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+    </front>
+</reference>
+
+<reference anchor='rdap-json-values' target='https://www.iana.org/assignments/rdap-json-values/rdap-json-values.xhtml'>
+    <front>
+        <title>RDAP JSON Values</title>
         <author>
             <organization>IANA</organization>
         </author>
