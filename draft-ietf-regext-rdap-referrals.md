@@ -43,6 +43,9 @@ organization = "ICANN"
 
 This document describes an RDAP extension that allows RDAP clients to request to
 be redirected to a related RDAP record for a resource.
+This document also defines new link relations that can be used in redirect requests
+that can be used in query bootstrapping and navigating hierarchies, such as the hierarchies
+described in RFC9910.
 
 {mainmatter}
 
@@ -296,11 +299,45 @@ related resource for an RDAP resource.
 
 ## Link Relations {#linkrelation}
 
-IANA is requested to register the following value into the [@link-relations] registry:
+IANA is requested to register the following value into the [@link-relations] registry.
+
+### Rdap-Bootstrap
 
 **Relation Name:** rdap-bootstrap
 
 **Description:** Refers to an RDAP object for which a reference can be derived from RFC 9224.
+
+**Reference:** This document once published as an RFC.
+
+### Rdap-Related-Top
+
+**Relation Name:** rdap-related-top
+
+**Description:** Refers to an RDAP resource related to another RDAP resource at the top of a hierarchy, such as a hierarchy described in [@!RFC9910].
+
+**Reference:** This document once published as an RFC.
+
+### Rdap-Related-Bottom
+
+**Relation Name:** rdap-related-bottom
+
+**Description:** Refers to an RDAP resource related to another RDAP resource at the bottom of a hierarchy, such as a hierarchy described in [@!RFC9910].
+
+**Reference:** This document once published as an RFC.
+
+### Rdap-Related-Up
+
+**Relation Name:** rdap-related-up
+
+**Description:** Refers to an RDAP resource related to another RDAP resource one level up in a hierarchy, such as a hierarchy described in [@!RFC9910].
+
+**Reference:** This document once published as an RFC.
+
+### Rdap-Related-Down
+
+**Relation Name:** rdap-related-down
+
+**Description:** Refers to an RDAP resource related to another RDAP resource one level down in a hierarchy, such as a hierarchy described in [@!RFC9910].
 
 **Reference:** This document once published as an RFC.
 
