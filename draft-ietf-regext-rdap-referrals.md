@@ -99,7 +99,15 @@ The redirect query for the parent network of `192.0.2.42` with the base URL of
 `https://rdap.example.net/` would be:
 
 ```
-https://rdap.exampple.net/redirects0_ref/rdap-up/ip/192.0.2.42
+https://rdap.example.net/redirects0_ref/rdap-up/ip/192.0.2.42
+```
+
+As another example, the following URL would redirect the client to the appopriate
+Geolocation Feed ([@RFC8805]) resource for `192.0.2.42`, using the `geofeed`
+resource specified in [@RFC9877]:
+
+```
+https://rir-rdap.example.com/rdap/redirects0_ref/geofeed/ip/192.0.2.42
 ```
 
 Lookup paths for domain names, IP networks, autonomous system numbers,
