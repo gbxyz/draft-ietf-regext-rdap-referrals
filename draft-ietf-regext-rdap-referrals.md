@@ -449,7 +449,7 @@ The benefits of this extension will not materialize if a client issues a query u
 this extension, receives an error, and subsequently requeries a server without using
 this extension. Therefore, clients **SHOULD NOT** use this extension unless the client
 has _a priori_ knowledge of the target server's ability to process queries with this extension
-(because, for example, the server is a member of a class of servers which implement a common "profile").
+(because, for example, the server is a member of a class of servers which implement a common "profile" such as [@gtld-rdap-profile]).
 
 Likewise, servers **SHOULD NOT** issue redirects in the manner described in (#multi_hop) unless
 the origin server has _a priori_ knowledge of the target server's ability to process queries
