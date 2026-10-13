@@ -301,7 +301,7 @@ related resource for an RDAP resource.
 
 IANA is requested to register the following value into the [@link-relations] registry.
 
-### Rdap-Bootstrap
+### rdap-bootstrap
 
 **Relation Name:** rdap-bootstrap
 
@@ -309,7 +309,7 @@ IANA is requested to register the following value into the [@link-relations] reg
 
 **Reference:** This document once published as an RFC.
 
-### Rdap-Related-Top
+### rdap-related-top
 
 **Relation Name:** rdap-related-top
 
@@ -317,7 +317,7 @@ IANA is requested to register the following value into the [@link-relations] reg
 
 **Reference:** This document once published as an RFC.
 
-### Rdap-Related-Bottom
+### rdap-related-bottom
 
 **Relation Name:** rdap-related-bottom
 
@@ -325,7 +325,7 @@ IANA is requested to register the following value into the [@link-relations] reg
 
 **Reference:** This document once published as an RFC.
 
-### Rdap-Related-Up
+### rdap-related-up
 
 **Relation Name:** rdap-related-up
 
@@ -333,7 +333,7 @@ IANA is requested to register the following value into the [@link-relations] reg
 
 **Reference:** This document once published as an RFC.
 
-### Rdap-Related-Down
+### rdap-related-down
 
 **Relation Name:** rdap-related-down
 
