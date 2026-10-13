@@ -388,7 +388,9 @@ This section is to be removed before publishing as an RFC.
 
 ## Changes from 04 to 05
 
-* Switch back to 400 as the status for redirects for search and help requests.
+* Switch back to 400 as the status for redirects for search and help requests, and provide an example response with a new notice type.
+* Define new link relations and explain them in the Abstract.
+* Updated Security Considerations as per WG feedback.
 
 ## Changes from 03 to 04
 
