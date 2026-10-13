@@ -42,7 +42,8 @@ organization = "ICANN"
 .# Abstract
 
 This document describes an RDAP extension that allows RDAP clients to request to
-be redirected to a related RDAP record for a resource.
+be redirected to a related RDAP record for a resource and an RDAP extension that
+gives RDAP clients the ability to request no redirection in other scenarios.
 This document also defines new link relations that can be used in redirect requests
 that can be used in query bootstrapping and navigating hierarchies, such as the hierarchies
 described in RFC9910.
@@ -68,13 +69,21 @@ RIR. However, to obtain the URL(s) of the related resource(s), the client must r
 RDAP record (which the server must then produce and deliver) in order to extract the
 relevant URL from the "`links`" property of the object.
 
-This results in the wasteful expenditure of time, compute resources and
-bandwidth on the part of both the client and server.
+As deployed today, RDAP also has contrasting use cases for finding the registrations of IP resources.
+As defined by [@!RFC9082], an RDAP server returns the most specific network registration containing
+the information sought by the client. In practice, that information does not always sit on the server
+found through the processes defined in [@!RFC9224], and the client is given a redirect from the [@!RFC9224] origin
+server to a target server with the information. This practice is an optimization intended to satisfy the most
+common use case for this type of query. However, there are use cases for which the client specifically seeks
+the information on the [@!RFC9224] origin server and may wish to explicitly handled the referral to the more
+specific target server.
 
-This document describes an extension to RDAP that allows clients to request that
-an RDAP server redirect them to the URL of a related resource.
+This document describes extensions to RDAP that allow clients to signal preferences regarding
+redirects issued by RDAP servers.
 
-# RDAP Redirect Request
+# redirects0 RDAP Extension
+
+## RDAP Redirect Request
 
 To request a redirect to a related resource, the client sends an HTTP `GET`
 request with a URL of the form:
@@ -140,7 +149,7 @@ Content-Type: application/rdap+json
 }
 ```
 
-# RDAP Redirect Response
+## RDAP Redirect Response
 
 If the object specified in the request exists, a single appropriate link exists,
 and the client is authorised to perform the request, the server response
@@ -206,7 +215,7 @@ HTTP/1.1 307 Temporary Redirect
 Location: https://rir.example/ip/2001%3adb8%3a%3a/32
 ```
 
-## Selecting The Appropriate Link
+### Selecting The Appropriate Link
 
 When the server receives a redirect request, it must select which of an object's
 links it should use to construct the response.
@@ -216,7 +225,7 @@ segment of the request. The `type` and `hreflang` properties of the link, if
 present, **MUST** match the `Accept` and (if specified) `Accept-Language` header
 fields of the request.
 
-## Caching by Intermediaries
+### Caching by Intermediaries
 
 To facilitate caching of RDAP resources by intermediary proxies, servers which
 provide a redirect based on the value of the `Accept` header field in the
@@ -230,19 +239,19 @@ Example:
 Vary: accept, accept-language
 ```
 
-## Client Processing of Redirect Responses
+### Client Processing of Redirect Responses
 
 Note that as per Section 10.2.2 of [@!RFC9110], the URI-reference in `location`
 header fields **MAY** be relative. For relative references, RDAP clients
 **MUST** compute the full URI using the request URI.
 
-# RDAP Conformance {#rdapConformance}
+## RDAP Conformance {#rdapConformance}
 
 Servers which implement this specification **MUST** include the string
 "`redirects0`" in the "`rdapConformance`" array in responses to RDAP "help"
 queries.
 
-# Bootstrap Use Case {#bootstrap}
+## Bootstrap Use Case {#bootstrap}
 
 The primary use case of this extension is a one-hop redirect, where the client is not interested in the use
 of this extension beyond the first redirect. Another use case is querying a bootstrap redirect server for
@@ -263,7 +272,7 @@ Location: https://rir1.example/ip/2001%3adb8%3a%3a/32
 Other uses cases may exist, but for this specific use case, this document registers the "rdap-bootstrap"
 link relationship type.
 
-# Multi-Hop Redirect Limitations {#multi_hop}
+## Multi-Hop Redirect Limitations {#multi_hop}
 
 In some scenarios, a target server might have a policy to issue another redirect using this extension.
 For example:
@@ -287,9 +296,54 @@ not all servers may support this extension. Therefore, the "/redirects0_ref" pat
 specification **MUST** only be used in an HTTP redirect if the server issuing the redirect is assured that the
 target server of the redirect supports this extension.
 
+# noRedirects0 RDAP Extension
+
+## Usage of noRedirects0
+
+A client can signal to a server, using the method specified in [@!I-D.ietf-regext-rdap-x-media-type],
+the preference not to receive a redirect using the `noRedirect0` extension
+identifier. Because there is no guarantee that a server can honor this signal,
+a client MUST be capable of processing a redirect if this signal is sent.
+
+If a server honors the `noRedirects0` extension and does not issue a redirect,
+the server MUST respond with an RDAP resource as identified by the media type
+specified in [@!RFC7480] (i.e., the response cannot be a web page or some other
+resource that is not parsable as RDAP JSON).
+
+The following example demonstrates the `noRedirects0` extension in the lookup of an IP address.
+
+```
+Client Request:
+
+GET /ip/192.0.2.42 HTTP/1.1
+Accept: application/rdap+json;exts_list=rdap_level_0+noRedirects0
+
+Server Response:
+
+HTTP/1.1 200 OK
+Content-Type: application/rdap+json
+
+{ "rdapConformance" : [ "rdap_level_0", "noRedirects0" ],
+  "objectClassName": "ip network",
+  "ipVersion": "v4",
+  "handle": "NET-EXAMPLE",
+  "startAddress": "192.0.2.0",
+  "endAddress": "192.0.2.255",
+  "notices" : [
+    { "description" : [ "Data from RFC9224 origin" ] } ]
+}
+
+```
+
+## RDAP Conformance {#rdapConformance}
+
+Servers which implement this specification **MUST** include the string
+"`noRedirects0`" in the "`rdapConformance`" array in responses to RDAP "help"
+queries.
+
 # IANA Considerations
 
-## RDAP Extension Identifier
+## redirects0 RDAP Extension Identifier
 
 IANA is requested to register the following value in the [@rdap-extensions]
 Registry:
@@ -304,6 +358,21 @@ Registry:
 
 **Intended usage:** this extension allows clients to request to be redirected to a
 related resource for an RDAP resource.
+
+## noRedirects0 RDAP Extension Identifier
+
+IANA is requested to register the following value in the [@rdap-extensions]
+Registry:
+
+**Extension identifier:** `noRedirects0`
+
+**Registry operator:** any.
+
+**Published specification:** this document.
+
+**Contact:** the authors of this document.
+
+**Intended usage:** this extension allows clients to signal a preference not to be redirected to a resource.
 
 ## Link Relations {#linkrelation}
 
