@@ -42,11 +42,11 @@ organization = "ICANN"
 .# Abstract
 
 This document describes an RDAP extension that allows RDAP clients to request to
-be redirected to a related RDAP record for a resource and an RDAP extension that
+be redirected to a related RDAP record for a resource, and an RDAP extension that
 gives RDAP clients the ability to request no redirection in other scenarios.
 This document also defines new link relations that can be used in redirect requests
 that can be used in query bootstrapping and navigating hierarchies, such as the hierarchies
-described in RFC9910.
+described in RFC 9910.
 
 {mainmatter}
 
@@ -301,7 +301,7 @@ target server of the redirect supports this extension.
 ## Usage of noRedirects0
 
 A client can signal to a server, using the method specified in [@!I-D.ietf-regext-rdap-x-media-type],
-the preference not to receive a redirect using the `noRedirect0` extension
+the preference to not receive a redirect using the `noRedirect0` extension
 identifier. Because there is no guarantee that a server can honor this signal,
 a client MUST be capable of processing a redirect if this signal is sent.
 
@@ -448,14 +448,15 @@ RDAP clients **SHOULD** detect and intervene in cyclical redirections.
 The benefits of this extension will not materialize if a client issues a query using
 this extension, receives an error, and subsequently requeries a server without using
 this extension. Therefore, clients **SHOULD NOT** use this extension unless the client
-has _a priori_ knowledge of the target servers ability to process queries with this extension.
+has _a priori_ knowledge of the target server's ability to process queries with this extension
+(because, for example, the server is a member of a class of servers which implement a common "profile").
 
 Likewise, servers **SHOULD NOT** issue redirects in the manner described in (#multi_hop) unless
-the origin server has _a priori_ knowledge of the target servers ability to process queries
+the origin server has _a priori_ knowledge of the target server's ability to process queries
 with this extension.
 
 A redirect loop will occur if a server issues a redirect causing a client to follow
-redirects back to a previous server queired during the processing of the same query.
+redirects back to a previous server queried during the processing of the same query.
 Clients **MUST** cancel any queries when a redirect loop is detected. Servers **MUST NOT**
 issue responses that cause redirect loops.
 
